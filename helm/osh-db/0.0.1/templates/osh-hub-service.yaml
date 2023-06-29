@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    app.openshift.io/vcs-ref: ""
+    app.openshift.io/vcs-uri: https://github.com/siteshwar/openscanhub-deployment-configs.git
+    openshift.io/generated-by: OpenShiftWebConsole
+  creationTimestamp: "2023-07-12T08:55:39Z"
+  labels:
+    app: osh-hub
+    app.kubernetes.io/component: osh-hub
+    app.kubernetes.io/instance: osh-hub
+    app.kubernetes.io/name: osh-hub
+    app.kubernetes.io/part-of: openscanhub
+  name: osh-hub
+  namespace: communishift-openscanhub
+  resourceVersion: "3565410076"
+  uid: e3b580de-b2e4-454c-b0cc-e53cd3ff9f8a
+spec:
+  # clusterIP: 172.27.54.204
+  # clusterIPs:
+  # - 172.27.54.204
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: 8000-tcp
+    port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: osh-hub
+    deployment: osh-hub
+  sessionAffinity: None
+  type: ClusterIP

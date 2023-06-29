@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  creationTimestamp: "2023-07-12T08:36:06Z"
+  labels:
+    app: osh-db
+    app.kubernetes.io/component: osh-db
+    app.kubernetes.io/instance: osh-db
+    app.kubernetes.io/name: osh-db
+    app.kubernetes.io/part-of: openscanhub
+    app.openshift.io/runtime-version: latest
+  name: osh-db
+  namespace: communishift-openscanhub
+  resourceVersion: "3565337770"
+  uid: d992896d-589a-46be-92eb-fbe832a29450
+spec:
+  #clusterIP: 172.27.39.53
+  #clusterIPs:
+  #- 172.27.39.53
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: 5432-tcp
+    port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    app: osh-db
+    deployment: osh-db
+  sessionAffinity: None
+  type: ClusterIP

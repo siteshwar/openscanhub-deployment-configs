@@ -1,0 +1,8 @@
+- hosts: all
+  become: true
+  vars:
+    ansible_ssh_user: centos
+    OSH_HUB_URL: "http://ec2-54-200-106-226.us-west-2.compute.amazonaws.com:8000"
+  roles:
+    - osh-worker-role
+

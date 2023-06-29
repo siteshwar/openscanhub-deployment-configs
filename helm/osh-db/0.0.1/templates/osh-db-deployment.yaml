@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    alpha.image.policy.openshift.io/resolve-names: '*'
+    app.openshift.io/route-disabled: "false"
+    deployment.kubernetes.io/revision: "1"
+    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"osh-db:latest","namespace":"covscan"},"fieldPath":"spec.template.spec.containers[?(@.name==\"osh-db\")].image","pause":"false"}]'
+    openshift.io/generated-by: OpenShiftWebConsole
+  creationTimestamp: "2023-07-12T08:36:06Z"
+  generation: 1
+  labels:
+    app: osh-db
+    app.kubernetes.io/component: osh-db
+    app.kubernetes.io/instance: osh-db
+    app.kubernetes.io/name: osh-db
+    app.kubernetes.io/part-of: openscanhub
+    app.openshift.io/runtime: postgresql
+    app.openshift.io/runtime-namespace: communishift-openscanhub
+  name: osh-db
+  namespace: communishift-openscanhub
+  resourceVersion: "3565338694"
+  uid: 4a711cf4-f8d8-4b67-8e1a-d886bccc8e04
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: osh-db
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftWebConsole
+      creationTimestamp: null
+      labels:
+        app: osh-db
+        deployment: osh-db
+    spec:
+      containers:
+      - env:
+        - name: POSTGRESQL_PASSWORD
+          value: velryba
+        - name: POSTGRESQL_USER
+          value: openscanhub
+        - name: POSTGRESQL_DATABASE
+          value: openscanhub
+        image: quay.io/sclorg/postgresql-12-c8s:latest
+        imagePullPolicy: Always
+        name: osh-db
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

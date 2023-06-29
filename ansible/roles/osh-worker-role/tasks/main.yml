@@ -1,0 +1,68 @@
+---
+# tasks file for osh-worker-role
+- name: Keep SELinux in permissive mode
+  ansible.posix.selinux:
+    state: disabled
+
+- name: "Update to latest packages"
+  ansible.builtin.dnf:
+    name: '*'
+    state: latest
+
+- name: Install cppcheck from powertools repository
+  ansible.builtin.dnf:
+    name: cppcheck
+    enablerepo: powertools
+
+# dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+- name: Install epel
+  yum:
+    name: "epel-release,epel-next-release"
+    state: latest
+    disable_gpg_check: true
+
+# dnf copr enable @openscanhub/devel
+- name: Enable openscanhub repository
+#   ansible.builtin.dnf:
+#     enable_plugin: copr
+#     name: "@openscanhub/devel"
+  ansible.builtin.shell: dnf copr enable -y @openscanhub/devel
+
+# dnf install -y osh-worker
+- name: Install osh-worker package
+  ansible.builtin.dnf:
+    name: osh-worker
+    state: latest
+
+# Add gropu csmock
+- name: Add csmock group
+  ansible.builtin.group:
+    name: csmock
+    state: present
+
+# useradd csmock -a -G root
+- name: Add csmock user to root group
+  ansible.builtin.user:
+    name: csmock
+    group: csmock
+    append: true
+    groups: root,mock
+
+
+# Add `config_opts['use_nspawn'] = False` to `fedora-37-x86_64.cfg`.
+- name: Disable nspawn in fedora 37 mock config
+  ansible.builtin.template:
+    src: templates/fedora-37-x86_64.cfg-disable-nspawn
+    dest: /etc/mock/fedora-37-x86_64.cfg
+
+# Add worker.conf
+#- name: Add /etc/osh/worker.conf
+#  ansible.builtin.template:
+#    src: templates/worker-local.conf.j2
+#    dest: /etc/osh/worker.conf
+#
+# systemctl start osh-worker
+#- name: Start osh-worker
+#  ansible.builtin.systemd:
+#    name: osh-worker
+#    state: started

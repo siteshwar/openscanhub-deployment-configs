@@ -1,0 +1,26 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  creationTimestamp: "2023-07-12T08:55:39Z"
+  labels:
+    app: osh-hub
+    app.kubernetes.io/component: osh-hub
+    app.kubernetes.io/instance: osh-hub
+    app.kubernetes.io/name: osh-hub
+    app.kubernetes.io/part-of: openscanhub
+  name: osh-hub
+  namespace: communishift-openscanhub
+  resourceVersion: "3565410086"
+  uid: 8ae9ffe9-b06d-44ea-88cb-b4c9b67e1ce1
+spec:
+  host: osh-hub
+  port:
+    targetPort: 8000-tcp
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: osh-hub
+    weight: 100
+  wildcardPolicy: None

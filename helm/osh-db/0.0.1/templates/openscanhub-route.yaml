@@ -1,0 +1,25 @@
+# apiVersion: route.openshift.io/v1
+# kind: Route
+# metadata:
+#   annotations:
+#     openshift.io/host.generated: "true"
+#   creationTimestamp: "2023-07-12T09:24:37Z"
+#   labels:
+#     app: osh-hub
+#     app.kubernetes.io/component: osh-hub
+#     app.kubernetes.io/instance: osh-hub
+#     app.kubernetes.io/name: osh-hub
+#     app.kubernetes.io/part-of: openscanhub
+#   name: openscanhub
+#   namespace: communishift-openscanhub
+#   resourceVersion: "3565522891"
+#   uid: de4a2fd4-43ad-4981-b4a8-1a6d3710dfec
+# spec:
+#   host: openscanhub-covscan.apps.ocp-c1.prod.psi.redhat.com
+#   port:
+#     targetPort: 8000-tcp
+#   to:
+#     kind: Service
+#     name: osh-hub
+#     weight: 100
+#   wildcardPolicy: None

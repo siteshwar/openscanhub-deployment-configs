@@ -1,0 +1,118 @@
+---
+# tasks file for resalloc-server-role
+# dnf update -y
+- name: "Update to latest packages"
+  ansible.builtin.dnf:
+    name: '*'
+    state: latest
+
+# dnf config-manager --set-enabled powertools
+- name: "Enable powertools repository"
+  ansible.builtin.dnf:
+    enablerepo: powertools
+
+# dnf install epel-release epel-next-release
+- name: "Enable epel"
+  ansible.builtin.dnf:
+    name: 'epel-release,epel-next-release'
+    state: latest
+
+# dnf install -y resalloc-server resalloc
+# dnf install -y resalloc-aws
+# dnf install -y postgresql-server
+# dnf install -y python3-psycopg2.x86_64
+- name: "Install resalloc server, client and its dependencies"
+  ansible.builtin.dnf:
+    name: 'resalloc-server,resalloc,resalloc-aws,postgresql-server,python3-psycopg2.x86_64'
+    state: latest
+
+# /usr/bin/postgresql-setup --initdb
+- name: "Run /usr/bin/postgresql-setup --initdb"
+  ansible.builtin.command:
+    cmd: "/usr/bin/postgresql-setup --initdb"
+    creates: /var/lib/pgsql/data/postgresql.conf
+
+# systemctl start postgresql
+# - name: "Start postgresql"
+#   ansible.builtin.systemd:
+#     state: started
+#     name: postgresql
+
+# su - postgres -c psql
+# 	CREATE USER "resalloc" WITH PASSWORD '';
+# 	CREATE DATABASE "resalloc";
+# 	GRANT ALL PRIVILEGES ON DATABASE "resalloc" TO "resalloc";
+# - name: "Create resalloc user"
+#   become_user: 'postgres'
+#   community.postgresql.postgresql_user:
+#     name: resalloc
+#     password: ''
+# 
+# - name: "Create resalloc database"
+#   become_user: 'postgres'
+#   community.postgresql.postgresql_db:
+#     db: resalloc
+# 
+# - name: "Grant privileges"
+#   become_user: 'postgres'
+#   community.postgresql.postgresql_privs:
+#     database: resalloc
+#     type: database
+#     privs: ALL
+#     role: resalloc
+
+- name: "Copy pools.yaml"
+  become_user: resalloc
+  ansible.builtin.copy:
+    src: pools.yaml
+    dest: /etc/resallocserver/pools.yaml
+
+- name: "Copy server.yaml"
+  become_user: resalloc
+  ansible.builtin.copy:
+    src: server.yaml
+    dest: /etc/resallocserver/server.yaml
+
+# systemctl start resalloc
+#- name: "Start resalloc"
+#  ansible.builtin.systemd:
+#    state: started
+#    name: resalloc
+#
+- name: "Create aws config directory"
+  ansible.builtin.file:
+    path: /var/lib/resallocserver/.aws
+    owner: resalloc
+    group: resalloc
+    state: directory
+
+- name: "Copy aws config file"
+  become_user: resalloc
+  ansible.builtin.copy:
+    src: aws-config
+    dest: /var/lib/resallocserver/.aws/config
+
+- name: "Install ansible"
+  ansible.builtin.dnf:
+    name: 'ansible'
+    state: latest
+
+# git clone https://pagure.io/forks/svashisht/rhcopr/vm-provisioning.git to /etc/resallocserver/vm-provisioning and switch branch to openscanhub-test
+- name: "Clone vm-promisioning"
+  become_user: resalloc
+  ansible.builtin.git:
+    repo: 'https://pagure.io/forks/svashisht/rhcopr/vm-provisioning.git'
+    dest: /etc/resallocserver/vm-provisioning 
+    version: openscanhub-test
+
+# git clone https://github.com/siteshwar/openscanhub-deployment-configs.git to /etc/resallocserver/openscanhub-deployment-configs
+#
+- name: "Clone deployment configs"
+  become_user: resalloc
+  ansible.builtin.git:
+    repo: 'https://github.com/siteshwar/openscanhub-deployment-configs.git'
+    dest: /etc/resallocserver/openscanhub-deployment-configs
+
+- name: "Message"
+  ansible.builtin.debug:
+    msg: "Run `aws configure` as resalloc user and put aws private key file under /home/resalloc/.ssh/id_rsa, then start resalloc service."

@@ -1,0 +1,27 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  creationTimestamp: "2023-07-12T08:36:06Z"
+  labels:
+    app: osh-db
+    app.kubernetes.io/component: osh-db
+    app.kubernetes.io/instance: osh-db
+    app.kubernetes.io/name: osh-db
+    app.kubernetes.io/part-of: openscanhub
+    app.openshift.io/runtime-version: latest
+  name: osh-db
+  namespace: communishift-openscanhub
+  resourceVersion: "3565337780"
+  uid: fd1f30e9-83aa-4546-8148-3c5ea9cf159e
+spec:
+  host: osh-db
+  port:
+    targetPort: 5432-tcp
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: osh-db
+    weight: 100
+  wildcardPolicy: None

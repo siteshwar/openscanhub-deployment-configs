@@ -1,0 +1,15 @@
+NetworkManager
+anaconda
+bash
+dbus-broker
+dnf
+dracut
+gcc-c++
+initial-setup
+kernel
+livecd-tools
+pungi
+redhat-rpm-config
+rpm-build
+selinux-policy
+setup
