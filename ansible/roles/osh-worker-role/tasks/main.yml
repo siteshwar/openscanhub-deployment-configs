@@ -9,17 +9,18 @@
     name: '*'
     state: latest
 
-- name: Install cppcheck from powertools repository
-  ansible.builtin.dnf:
-    name: cppcheck
-    enablerepo: powertools
-
 # dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 - name: Install epel
   yum:
     name: "epel-release,epel-next-release"
     state: latest
     disable_gpg_check: true
+
+      #- name: Install cppcheck from crb repository
+      #  ansible.builtin.dnf:
+      #    name: cppcheck
+      #    enablerepo: crb
+      #
 
 # dnf copr enable @openscanhub/devel
 - name: Enable openscanhub repository
@@ -55,12 +56,20 @@
     src: templates/fedora-37-x86_64.cfg-disable-nspawn
     dest: /etc/mock/fedora-37-x86_64.cfg
 
+      # - name: Custom ssl certificate
+      #   ansible.builtin.template:
+      #     src: templates/ec2-54-202-223-253.us-west-2.compute.amazonaws.com.crt
+      #     dest: /etc/pki/ca-trust/source/anchors/ec2-54-202-223-253.us-west-2.compute.amazonaws.com.crt
+      # 
+      # - name: Update ca trust
+      #   ansible.builtin.shell: update-ca-trust
+      # 
 # Add worker.conf
-#- name: Add /etc/osh/worker.conf
-#  ansible.builtin.template:
-#    src: templates/worker-local.conf.j2
-#    dest: /etc/osh/worker.conf
-#
+# - name: Add /etc/osh/worker.conf
+#   ansible.builtin.template:
+#     src: templates/worker-local.conf.j2
+#     dest: /etc/osh/worker.conf
+# 
 # systemctl start osh-worker
 #- name: Start osh-worker
 #  ansible.builtin.systemd:

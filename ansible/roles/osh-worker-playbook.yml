@@ -1,7 +1,7 @@
 - hosts: all
   become: true
   vars:
-    ansible_ssh_user: ec2-user
+    ansible_ssh_user: centos
   roles:
     - osh-worker-role
 
