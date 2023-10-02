@@ -1,0 +1,8 @@
+- hosts: all
+  become: true
+  vars:
+    OSH_HUB_URL: https://ec2-3-17-146-18.us-east-2.compute.amazonaws.com/osh/xmlrpc
+    ansible_ssh_user: centos
+  roles:
+    - osh-worker-role
+

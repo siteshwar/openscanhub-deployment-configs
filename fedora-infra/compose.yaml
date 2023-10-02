@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  db:
+    image: docker.io/postgres:12
+    container_name: db
+    hostname: db
+    environment:
+      POSTGRES_PASSWORD: velryba
+      POSTGRES_USER: openscanhub
+      POSTGRES_DB: openscanhub
+    ports:
+      - "5432:5432"
+    networks:
+      - internal-network
+
+  fedora-osh-hub:
+    image: fedora-osh-hub
+    build:
+      context: .
+      dockerfile: hub.Dockerfile
+    container_name: fedora-osh-hub
+    hostname: fedora-osh-hub
+    depends_on:
+      - db
+    ports:
+      - "8000:80"
+    networks:
+      - internal-network
+    volumes:
+      - ./:/src:ro,z
+    stdin_open: true
+    tty: true
+
+  fedora-osh-worker:
+    image: fedora-osh-worker
+    build:
+      context: .
+      dockerfile: worker.Dockerfile
+    container_name: fedora-osh-worker
+    hostname: fedora-osh-worker
+    depends_on:
+      - osh-hub
+    networks:
+      - internal-network
+    volumes:
+      - ./:/src:ro,z
+    privileged: true
+    stdin_open: true
+    tty: true
+
+  fedora-osh-client:
+    image: fedora-osh-client
+    build:
+      context: .
+      dockerfile: client.Dockerfile
+    container_name: fedora-osh-client
+    hostname: fedora-osh-client
+    depends_on:
+      - osh-hub
+    networks:
+      - internal-network
+    volumes:
+      - ./:/src:ro,z
+    stdin_open: true
+    tty: true
+
+networks:
+  internal-network:
